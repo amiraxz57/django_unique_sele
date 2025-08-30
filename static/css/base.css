@@ -1,0 +1,166 @@
+/* core/static/css/main.css */
+
+:root {
+  --dark-navy: #0B0C2A;
+  --navy: hsl(240, 36%, 17%);
+  --gold: #fea527;
+  --cream: #FFF3E2;
+  --orange: #F4A300;
+  --pink: #E8739B;
+  --whitee: #bdbdbd
+}
+
+/* پایه‌ای */
+body {
+  background-color: var(--dark-navy);
+  color: var(--cream);
+  font-family: "Vazir", sans-serif;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  /* z-index: 1; این خط را حذف کنید */
+}
+
+body::before {
+  content: "";
+  position:fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: url("{% static 'images/bg-shape.svg' %}") center/cover no-repeat;
+
+  opacity: 1;
+  mix-blend-mode: overlay;
+  pointer-events: none;
+  z-index: -1; 
+}
+
+body > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* رنگ‌های سفارشی */
+.bg-navy { background-color: var(--navy); }
+.bg-dark-navy { background-color: var(--dark-navy); }
+.text-gold { color: var(--gold); }
+.text-cream { color: var(--cream); }
+.border-gold { border: 1px solid var(--gold); }
+.bgg-cream { color: var(--cream); }
+
+
+/* دکمه‌ها */
+.btn-gold {
+  background-color: var(--orange);
+  color: var(--dark-navy);
+  font-weight: bold;
+  transition: all 0.3s;
+}
+.btn-gold:hover {
+  background-color: var(--whitee);
+  color: black;
+}
+
+/* نوار ناوبری */
+.navbar-custom {
+  background-color: var(--navy);
+  border-bottom: 1px solid var(--gold);
+}
+.nav-link-custom {
+  color: var(--gold) !important;
+  transition: all 0.3s;
+}
+.nav-link-custom:hover {
+  color: var(--pink) !important;
+}
+
+/* کارت محصولات */
+.product-card {
+  background: var(--navy);
+  border: 1px solid var(--gold);
+  transition: transform 0.3s;
+  height: 100%;
+}
+.product-card:hover {
+  transform: translateY(-5px);
+}
+.product-img {
+  height: 200px;
+  object-fit: cover;
+}
+
+/* فرم‌ها */
+.form-control-custom {
+  background-color: var(--dark-navy);
+  color: var(--cream);
+  border: 1px solid var(--gold);
+}
+.form-control-custom:focus {
+  background-color: var(--dark-navy);
+  color: var(--cream);
+  border-color: var(--orange);
+  box-shadow: 0 0 0 0.25rem rgba(244, 163, 0, 0.25);
+}
+
+/* فوتر */
+.footer-custom {
+  background-color: var(--navy);
+  border-top: 1px solid var(--gold);
+  margin-top: auto;
+}
+
+/* پیام‌ها */
+.alert-gold {
+  background-color: var(--navy);
+  color: var(--gold);
+  border: 1px solid var(--gold);
+}
+
+/* صفحه لاگین */
+.login-card {
+  background: var(--navy);
+  border: 2px solid var(--gold);
+  max-width: 450px;
+}
+.login-header {
+  background: var(--dark-navy);
+  color: var(--gold);
+}
+
+/* ابزارک‌ها */
+.icon-hover {
+  transition: all 0.3s;
+}
+.icon-hover:hover {
+  color: var(--pink);
+  transform: scale(1.1);
+}
+
+/* استایل سفارشی جستجو */
+.search-input-custom {
+    width: 100%;
+    background-color: var(--gold) !important; /* پس‌زمینه طلایی */
+    color: var(--dark-navy) !important; /* متن سرمه‌ای */
+    border: none !important;
+    border-radius: 10px !important; /* گوشه‌های گرد */
+    padding: 10px 20px !important;
+    box-shadow: none !important;
+    transition: all 0.3s ease;
+    height: 40px;
+}
+
+.search-input-custom::placeholder {
+    color: var(--dark-navy) !important;
+    opacity: 0.7 !important;
+}
+
+.search-input-custom:focus {
+    outline: none !important;
+    box-shadow: 0 0 0 2px var(--pink) !important;
+}
+
+
+
+/* لایه SVG روی پس‌زمینه */
+
