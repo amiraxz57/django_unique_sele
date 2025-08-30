@@ -1,0 +1,163 @@
+def loginOrsign (request):
+    if request.method == 'POST':
+        form = create_user_phone_FORM(request.POST)
+        if form.is_valid():
+            phone = form.cleaned_data['phone_number']
+
+            otp_code , seccess =genarator_otp(phone)
+            print(otp_code)
+
+            if seccess:
+
+                request.session['phone_number'] = phone
+                messages.success( request,'کد برای شما ارسال شد')
+            else:
+                messages.error(request , 'خطا در ارسال کد ')
+
+           
+    else:
+        form = create_user_phone_FORM()
+
+    return render(request , 'login.html', {'form':form})
+
+def loginOrsign_OTP (request):
+    phone = request.session.get('phone_number')
+    if not phone :
+        messages.error('ابتدا شماره تلفن خود را وارد کنید')
+        return redirect('login')
+    
+    if request.method == 'POST' :
+
+        form = otp_uaer_FORM(request.POST)
+        
+        if form.is_valid():
+            otp = form.cleaned_data['otp']
+
+            if remind_time_OTP > time.time():
+
+
+                is_Valid , message = verify_otp(phone , otp)
+                if is_Valid:
+                
+                    user = CustomUser.objects.get_or_create ( phone_number = phone)
+
+                    user.backend = 'django.contrib.auth.backends.ModelBackend'
+
+                    login(request , user )
+                    messages.success(request , 'خوش امدید')
+                    if not CustomUser.objects.filter(phone_number = phone ).exists():
+
+                        return redirect('profile_name')
+
+                    else:
+
+                        return redirect('profile')
+                else :
+                    messages.error(request , 'کد به درستی وارد نشده است')
+                    is_Valid , message = verify_otp(phone , otp)
+
+            else:
+                if request.POST.get['resend_otp']:
+                    otp_code , seccess =genarator_otp(phone)
+
+
+
+    else :
+        form = otp_uaer_FORM()
+    remaind_time = remind_time_OTP('phone_number')
+
+    return render(request , 'otp.html' ,{'form' : form , 'remaind_time':remaind_time , 'phone':phone})
+
+                
+def profile_name (request):
+    # phone = request.session['phone_number']
+    # user = CustomUser.objects
+    # if phone 
+    
+    if request.method == 'POST' :
+        form = userName_FORM(request.POST)
+        if form.is_valid():
+            form.save()
+            return render(request , 'name_signup.html', {'form':form})
+        
+
+
+
+
+
+
+
+
+
+
+
+
+
+        def genarator_otp (phone_number):
+    otp_code = str(random.randint(100000 ,999999))
+
+    signature = hmac.new(
+        key = settings.SECRET_KEY.encode(),
+        msg = otp_code.encode(),
+        digestmod= hashlib.sha256
+    ).hexdigest()
+
+    cach_data ={ 'signature':signature , 'created':time.time() , 'tekrar':0}
+
+    cach_key = f'otp_phone_{phone_number}'
+
+    cache.set( cach_key, cach_data , 300)
+
+    print(otp_code)
+
+    return  True
+
+def verify_otp (phone_number , entred_otp):
+    cache_key = f'otp_phone_{phone_number}'
+    current_key = cache.get(cache_key)
+
+    if not current_key :
+        return False , 'کد منقضی شده '
+    
+    current_key['tekrar'] += 1
+
+    if current_key['tekrar'] >= 3 :
+        cache.delete(cache_key)
+        return False , 'شما بیش از حد کد دریاقت کردید باید تا 1 ساعت اینده صبر کنید'
+    
+    str_entred_otp = str(entred_otp)
+
+    cache.set(cache_key , current_key ,timeout= cache.ttl(cache_key))
+
+    signature = hmac.new(
+        key = settings.SECRET_KEY.encode(),
+        msg = str(entred_otp).encode(),
+        digestmod = hashlib.sha256
+    ).hexdigest()
+   
+    
+    if hmac.compare_digest(current_key['signature'] , signature) :
+        cache.delete(cache_key)
+        return True , 'کد تایید شد'
+    
+    return False
+
+def remind_time_OTP (phone_number):
+    cache_key = f'otp_phone_{phone_number}'
+    ttl = cache.ttl(cache_key)
+    return ttl if ttl is not None else 0
+
+
+def delete_otp (phone_number):
+    cache_key = f'otp_phone_{phone_number}'
+    cache.delete(cache_key)
+
+    
+
+
+
+
+
+
+
+            

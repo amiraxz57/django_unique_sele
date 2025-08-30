@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="text-center mb-4">{{ page_title }}</h1>
+    
+    <div class="row">
+        {% for product in products %}
+        <div class="col-md-4 mb-4">
+
+            <a href="/product/{{product.id}}" class="" style="color: none;">
+
+                <div class="card h-100">
+                    {% if product.image_pro %}
+                    <img src="{{ product.image_pro.url }}" class="card-img-top" alt="{{ product.name_pro }}" style="height: 200px; object-fit: cover;">
+                    {% else %}
+                    <div class="text-center py-5 bg-light">تصویر موجود نیست</div>
+                    {% endif %}
+                    <div class="card-body">
+                        <h5 class="card-title">{{ product.name_pro }}</h5>
+                        <p class="card-text">{{ product.info_pro|truncatechars:100 }}</p>
+                        <p class="text-success fw-bold">${{ product.price_pro }}</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="alert alert-info text-center">هیچ محصولی یافت نشد</div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
